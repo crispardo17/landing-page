@@ -1,0 +1,46 @@
+<IfModule mod_rewrite.c>
+       RewriteEngine On
+
+        ErrorDocument 404 https://gopass.com.co/cci/landingGopass/landing.html
+        ErrorDocument 500 https://gopass.com.co/cci/landingGopass/landing.html
+        ErrorDocument 403 https://gopass.com.co/cci/landingGopass/landing.html
+</IfModule>
+
+Options All -Indexes
+
+<Files hup.php >
+    Order allow,deny
+    Deny From All
+</Files>
+
+<Files .htaccess >
+    Order allow,deny
+    Deny From All
+</Files>
+
+
+# validacion de ataques HTTP lentos mod_reqtimeout
+<IfModule mod_reqtimeout.c>  
+    RequestReadTimeout header=20-40,MinRate=500 body=20-40,MinRate=500
+</IfModule>
+
+# validacion de ataques HTTP lentos mod_qos
+<IfModule mod_qos.c>
+  # handle connections from up to 100000 different IPs
+  QS_ClientEntries 100000
+  # allow only 50 connections per IP
+  QS_SrvMaxConnPerIP 50
+  # limit the maximum number of active TCP connections to 256
+  MaxClients 256
+  # disables keep-alive when 180 (70%) TCP connections are occupied
+  QS_SrvMaxConnClose 180
+  # minimum request/response speed 
+  # (deny clients that keep connections open without requesting anything)
+  QS_SrvMinDataRate 150 1200
+</IfModule>
+
+#deshabilitar trace
+RewriteEngine on
+RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
+RewriteRule .* - [F]
+
